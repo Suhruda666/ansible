@@ -1,0 +1,24 @@
+-name: Demo on using variables
+  hosts: all
+  vars:                                                #Declaring variables at play level; All tasks of the play can access this variable URL
+    URL: play.google.com
+  vars_files:
+    - Demo-vars.yaml
+  vars_prompt:
+    - name: URL
+      prompt: Enter URL Value #give prompt.google.com in output
+     #private: false--->if given this,value is seen in output-the above one(by default private is true-that means output will not be displayed on screen)
+  tasks: 
+    - name: Printing URL
+      ansible.builtin.debug
+        msg: "{{URL}}"
+
+    - name: Printing URLs
+      ansible.builtin.debug
+        msg: Value of URL is {{URL}}
+    vars:                                            #Declaring variables at task level (Local variable)
+        URL: task.google.com
+
+    - name: Printing CLI_URL
+      ansible.builtin.debug
+        msg: Value of CLI_URL is {{CLI_URL}}

@@ -5,6 +5,16 @@
       ansible.builtin.shell: uptime
       register: OUT            #Register captures the output of shell command and preserved it on the variable with name of our choice
 
-    -name: Print OUT Variable
+    -name: Printing OUT Variable
       ansible.builtin.debug:
         msg: "{{OUT.stdout}}"   #stdout= we have uptime here, hence out.stdout
+
+# Task:Need to capture the exit code and preserve  it in a variable so that I can use it anywhere in the script later, hence set_fact is used
+
+-name: Declaring the variable
+  ansible.builtin.set_fact:
+    STATUS: "{{OUT.rc}}"                #rc means exit code, here preserved output of it as status and we can use this whenever we want
+
+-name: Printing Exit code
+  ansible.builtin.debug:
+    msg: "{{STATUS}}"                    #hence set_fact registers the output in a variable/captured and preserves it in a variable

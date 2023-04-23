@@ -1,0 +1,7 @@
+#Playbook which calls the roles
+
+- name: Configuring the roboshop project
+  hosts: "{{COMPONENT}}"             #it calls 
+  become: yes
+  roles:
+    - "{{COMPONENT}}"              #it goes to f rontend and do all the things

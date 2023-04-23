@@ -1,0 +1,28 @@
+- name: Demo on using Conditions
+  hosts: all
+  vars:
+    actions: true
+    test: 1
+  tasks:
+  - name: Run this on Centos machines only
+    ansible.builtin.debug:
+      msg: Hi I am Centos
+      when: ansible_distribution == "Centos"
+
+  - name: Run this on Ubntu machines only
+    ansible.builtin.debug:
+      msg: Hi I am Ubntu
+      when: ansible_distribution == "Ubntu"     #since this condition is a failure, this won't be executed
+
+  - name: Run this action
+    ansible_builtin_debug:
+      msg: I will only run when Actions is true
+      when: actions                          #when actions is true it will eun, when actions is not true/false, it will not run and its skipped
+
+
+#defined and undefined are key words in ansible
+
+  - name: Run this test when variable is declared
+    ansible_builtin_debug:
+      msg: test variable is defined
+      when: test is defined                    #it will run this as test is defined and declared

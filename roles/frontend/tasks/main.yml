@@ -17,7 +17,7 @@
 
     - name: Copying the Frontend content  to nginx path
       ansible.builtin.copy:
-        src: /tmp/front-main/static
+        src: /tmp/front-main/static/
         dest: /usr/share/nginx/html
         remote_src: yes                               #since source is on a remote machine, give yes
 
@@ -25,12 +25,13 @@
       ansible.builtin.copy:                           #Copies the files from the files directory
         src: roboshop.conf
         dest: /etc/nginx/default.d/roboshop.conf
+        notify: Restart Nginx                         #only when there is change in roboshop.conf file, then only this handler will be called
 
-    - name: Restart frontend service
+    - name: Starting frontend service
     ansible.builtin.service
       name: nginx
-      state: restarted
+      state: started
       enabled: true
         
-
+#when frontend service has to be restarted?-only when there is change in roboshop.conf,only then I want to restart, handlers or reacters comes into picture
 

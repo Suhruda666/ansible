@@ -1,0 +1,10 @@
+-name: Demo on shell module
+  hosts: all
+  tasks:
+    - name: Execute shell module
+      ansible.builtin.shell: uptime
+      register: OUT            #Register captures the output of shell command and preserved it on the variable with name of our choice
+
+    -name: Print OUT Variable
+      ansible.builtin.debug:
+        msg: "{{OUT.stdout}}"   #stdout= we have uptime here, hence out.stdout

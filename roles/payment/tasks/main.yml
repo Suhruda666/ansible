@@ -1,0 +1,24 @@
+- name: Installing python and dependecies
+ansible.builtin.yum
+  name: "{{item}}"
+  state: installed
+loop:
+  - python36
+  -gcc
+  -python3-devel
+
+- name: Creating Roboshop user
+  include_role:
+    name: common
+    tasks_from: create-user
+
+- name: Downloading and extracting the component
+  include_role:
+    name: common
+    tasks_from: download
+
+- name: Installing python dependencies
+  ansible.builtin.pip
+    requirements: /home/{{APPUSER}}/{{COMPONENT}}/requirements.txt
+    executable: pip3.3
+    become_user: roboshop

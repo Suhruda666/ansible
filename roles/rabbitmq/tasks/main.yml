@@ -9,7 +9,6 @@
     name: 
       - rabbitmq-server
     state: installed
-    enabled: yes
 
 - name: Restarting MySQL service
   ansible.builtin.systemd:

@@ -8,18 +8,15 @@
     name: 
       - mysql-community-server
       - MySQL-python
-    state: present
+    state: installed
 
-- name: Starting MySQL service
-  ansible.builtin.service:
+- name: Restarting MySQL service
+  ansible.builtin.systemd:
     name: mysqld
-    state: started
-    enabled: true
+    state: restarted
+    enabled: yes
 
-- name: Reading MySQL Logfile                                #slurp module takes the file from the remote node
-  ansible.builtin.slurp:
-    src: /var/log/mysqld.log
-  register: mysql_log
+
 
 #- name: Declaring the fact in a variable
  # ansible.builtin.set_fact: 

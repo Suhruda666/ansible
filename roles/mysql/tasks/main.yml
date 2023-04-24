@@ -16,18 +16,60 @@
     state: started
     enabled: true
 
-- name: Collect all info except settings and users by root
-  community.mysql.mysql_info:
-    login_user: root
-    login_password: RoboShop@1
-  ignore_errors: yes                              #result is ignored and proceed with next action
-  register: MYSQL_STAT
+- name: Reading MySQL Logfile                                #slurp module takes the file from the remote node
+  ansible.builtin.slurp:
+    src: /var/log/mysqld.log
+  register: mysql_log
 
-- name: Reset Password
-  when : MYSQL_STAT.failed             #This task will be executed only when the status of failed is true
-  ansible.builtin.shell: grep "temporary password" /var/log/mysqld.log | awk '{print $NF}'
-  register: DEFAULT_ROOT_PASSWORD
+- name: Declaring the fact in a variable
+  ansible.builtin.set_fact: 
+    DEFAULT_PASS: "{{mysql_log['content'] |b64decode }}"
 
+- name: "Printing the output"
+  debug:
+    msg: "{{DEFAULT_PASS}}"
+
+- name: Collect using default password
+  block: 
+    - name: Grep mysql version
+      community.mysql.mysql_info:
+        login_user: root
+        login_password: "{{DB_PASSWORD}}"
+        filter: version
+
+  rescue:  
+    - name: Reading MySQL Logfile                                #slurp module takes the file from the remote node
+    ansible.builtin.slurp:
+      src: /var/log/mysqld.log
+    register: mysql_log
+
+
+
+    #reading the mysql file using slurp, it will be encoded
+
+
+#Using set_fact, I will be preserving output in a variable
+
+#- name: Reset password block
+  #when: MYSQL_STAT.failed                             #This task will be executed only when the status of failed is true
+  #ignore_errors: yes                          
+  #block:                                            #block helps to tie more tasks and can be used at a single shot
+    #- name: Fetching the Default Password
+      #ansible.builtin.shell: grep "temporary password" /var/log/mysqld.log | awk '{print $NF}'
+      #register: DEFAULT_ROOT_PASSWORD
+
+    #- name: Copying Mysql repo
+      #ansible.builtin.copy:
+      #src:root-pass.sql
+      #dest: /tmp/root-pass.sql
+
+  #Block and rescue method: can conditionolize 5 or 6 tasks using block. rescue block will specify task to run when earlier in a block fails
+  #In latest mysql, they are not allowing passwords in plain text, hence use above modules(hence shell method not working, using ansible method)
+  #Block and rescue work together. Rescue tasks will only execute when the task in block fail
+
+    #- name: Reset Default Password
+      #ansible.builtin.shell: mysql --connect-expire-password -uroot -p"{{DEFAULT_ROOT_PASSWORD}}" < /tmp/root-pass.sql     #password will be changed
+      
 
 
 

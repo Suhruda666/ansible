@@ -1,0 +1,31 @@
+- name: Installing maven
+  ansible.builtin.yum
+    name: 
+      - java-1.8.0-openjdk
+      - maven
+    state: present
+
+- name: Creating Roboshop user
+  include_role:
+    name: common
+    tasks_from: create-user
+
+- name: Downloading and extracting the component
+  include_role:
+    name: common
+    tasks_from: download
+
+- name: Preparing maven artifact
+  ansible.builtin.shell: mvn clean package && mv target/{{COMPONENT}}-1.0.jar {{COMPONENT}}.jar #if 1st  task is succesful, then 2nd will be executed
+  args:
+    chdir: /home/{{APPUSER}}/{{COMPONENT}}/
+  become_user: "{{APPUSER}}"
+
+- name: Configuring service
+  include_role:
+    name: common
+    tasks_from: config-service
+
+- name: Set-hostname
+  ansible.builtin.shell: set-hostname {{COMPONENT}}
+

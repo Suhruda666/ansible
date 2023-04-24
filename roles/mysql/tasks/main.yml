@@ -29,16 +29,16 @@
   #debug:
    # msg: "{{DEFAULT_PASS}}"
 
-- name: Connecting using default password
+- name: Checking default root password
   block: 
-    - name: Grep mysql version
-      community.mysql.mysql_info:
+    - name: Fetch MySQL version to check the DB connection
+      mysql_info:
         login_user: root
         login_password: "{{DB_PASSWORD}}"
         filter: version
 
   rescue:  
-    - name: Reading MySQL Logfile                                #slurp module takes the file from the remote node
+    - name: Load MySQL Logfile                                #slurp module takes the file from the remote node
     ansible.builtin.slurp:
       src: /var/log/mysqld.log
     register: mysql_log
@@ -48,12 +48,30 @@
         src: root-pass.sql
         dest: /tmp/root-pass.sql
 
-    - name: Changing the default password
-      ansible.builtin.shell: mysql --connect-expire-password -uroot -p"{{mysql_log['content'] | b64 decode | regex_findall('temporary password.*') | join(' ') | split (' ')  | last }}" < /tmp/root-pass.sql  # we can see temporary pw now and it will be in readable format; .* include everything which has temporary pw
+    - name: Declare facts
+      ansible.builtin.set_fact:
+      DEFAULT_PASS: "{{mysql_log['content'] | b64 decode | regex_findall('temporary password.*') | join(' ') | split (' ')  | last }}"  # we can see temporary pw now and it will be in readable format; .* include everything which has temporary pw
 
-- name: Uninstall Password validate_plugin
-  ansible.builtin.shell: echo "uninstall Password validate_plugin; | mysql -uroot -p"{{DB_PASSWORD}"
+    - name: Change MySQL
+      ansible.builtin.shell: echo ALTER USER 'root'@'localhost' IDENTIFIED BY '{{DB_PASSWORD}}';" | mysql --connect-expired-password -uroot -p"{{DEFAULT_PASSWORD}}
+
+- name: Check validate plugin exists
+  ansible.builtin.shell: echo "uninstall plugin validate_password; | mysql -uroot -p"{{DB_PASSWORD}"
   ignore_errors: yes
+
+
+- name: Downloading and extracting the component
+  include_role:
+    name: common
+    tasks_from: download
+
+- name: Injecting the schema
+  community.mysql.mysql_db
+    name: all_db
+    state: import
+    target: /tmp/mysql-main/shipping.sql
+    login_user: root
+    login_password: {{DB_PASSWORD}}
 
 
     #- name: Printing

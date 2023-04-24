@@ -35,3 +35,6 @@ roles-examples/
 └── vars 
     └── main.yml 
 
+##Limitation in this project:
+
+Fronted UI fails  intermittently(which ensure u see no items or display of catalogue)

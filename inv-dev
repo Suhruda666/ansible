@@ -15,6 +15,9 @@ user-dev.roboshop.internal
 
 [cart]
 cart-dev.roboshop.internal
-s
+
 [mysql]
 mysql-dev.roboshop.internal
+
+[shipping]
+shipping-dev.roboshop.internal

@@ -1,0 +1,14 @@
+- name: Demo on loops
+  hosts: all
+  tasks:
+    - name: Printing a loop
+      ansible.builtin.debug:            #debug is like echo in bash
+        msg: "Value in the loop is {{item}}"
+      loop:
+        - 10
+        - 20
+        - 30
+        - 40
+        - 50
+
+#Values in the loop can be refereed by the keyword/variable item

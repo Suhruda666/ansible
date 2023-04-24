@@ -28,5 +28,9 @@
 
 - name: Load catalogue schema
   community.mongodb.mongodb_shell:
-  file: "/tmp/mongodb-main/catalogue.js"
+  file: "/tmp/mongodb-main/{{item}}.js"
   idempotent: yes                       #schema will not be injected  more than once unless and until there are any changes
+loop:
+  - catalogue
+  - users
+

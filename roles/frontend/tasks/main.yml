@@ -22,7 +22,7 @@
         remote_src: yes                               #since source is on a remote machine, give yes
 
     - name: Copying the Nginx config
-      ansible.builtin.copy:                           #Copies the files from the files directory
+      ansible.builtin.template:                           #Copies the files from the files directory
         src: roboshop.conf
         dest: /etc/nginx/default.d/roboshop.conf
         notify: Restart Nginx                         #only when there is change in roboshop.conf file, then only this handler will be called

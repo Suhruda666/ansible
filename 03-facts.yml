@@ -1,0 +1,11 @@
+#A fact is nothing but a property of the machine/node extracted by ansible server
+
+-name: Demo on facts
+  hosts: all
+  tasks:
+    -name: task1
+    ansible.builtin.debig
+      msg: OS distribution = {{ansible_distribution}}  #centos is given to ansible_distribution and hence give this as var name and centos is printed
+    -name: printing mac address
+    ansible.builtin.debug
+      msg: Mac address is {{ansible_default_ipv4.macaddress}}    #mac address is under ansible_default_ipb4 and hence give this as var name.macaddress and mac address is printed

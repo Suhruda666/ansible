@@ -13,3 +13,25 @@ ansible_password speacial variable name for the user-account-password to use
 ###Ansible command that we are using to call the playbook
 
 ansible_playbook -i inv-dev -e ansible_user=centos -e ansible_password=DevOps321 -e COMPONENT=mongodb robot.yml
+
+#Files vs templates:
+
+Files : just copy the files as it is
+Templates: Copy the file along with the mentioned variables as a part of the copy
+
+###Ansible roles directory structure:
+
+roles-examples/ 
+├── defaults 
+│   └── main.yml 
+├── files ├── handlers 
+│   └── main.yml 
+├── meta 
+│   └── main.yml 
+├── README.md ├── tasks 
+│   └── main.yml 
+├── templates ├── tests │   ├── inventory 
+│   └── test.yml 
+└── vars 
+    └── main.yml 
+

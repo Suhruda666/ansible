@@ -21,15 +21,15 @@
     src: /var/log/mysqld.log
   register: mysql_log
 
-- name: Declaring the fact in a variable
-  ansible.builtin.set_fact: 
-    DEFAULT_PASS: "{{mysql_log['content'] |b64decode }}"
+#- name: Declaring the fact in a variable
+ # ansible.builtin.set_fact: 
+    #DEFAULT_PASS: "{{mysql_log['content'] |b64decode }}"
 
-- name: "Printing the output"
-  debug:
-    msg: "{{DEFAULT_PASS}}"
+#- name: "Printing the output"
+  #debug:
+   # msg: "{{DEFAULT_PASS}}"
 
-- name: Collect using default password
+- name: Connecting using default password
   block: 
     - name: Grep mysql version
       community.mysql.mysql_info:
@@ -43,8 +43,26 @@
       src: /var/log/mysqld.log
     register: mysql_log
 
+    - name: Copy root password change change command
+      ansible.builtin.copy
+        src: root-pass.sql
+        dest: /tmp/root-pass.sql
+
+    - name: Changing the default password
+      ansible.builtin.shell: mysql --connect-expire-password -uroot -p"{{mysql_log['content'] | b64 decode | regex_findall('temporary password.*') | join(' ') | split (' ')  | last }}" < /tmp/root-pass.sql  # we can see temporary pw now and it will be in readable format; .* include everything which has temporary pw
+
+- name: Uninstall Password validate_plugin
+  ansible.builtin.shell: echo "uninstall Password validate_plugin; | mysql -uroot -p"{{DB_PASSWORD}"
+  ignore_errors: yes
 
 
+    #- name: Printing
+      #ansible.builtin.debug:
+        #msg: "{{DEFAULT_PASS}}"
+
+
+
+    
     #reading the mysql file using slurp, it will be encoded
 
 
@@ -70,7 +88,3 @@
     #- name: Reset Default Password
       #ansible.builtin.shell: mysql --connect-expire-password -uroot -p"{{DEFAULT_ROOT_PASSWORD}}" < /tmp/root-pass.sql     #password will be changed
       
-
-
-
-    

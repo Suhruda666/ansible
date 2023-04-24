@@ -3,10 +3,10 @@ Description = Catalogue service
 [Service]
 User=roboshop
 Environment=Mongo=true
-Environment=Mongo_URL="mongodb://mongodb-dev.roboshop.internal:27017/catalogue"
+Environment=Mongo_URL="mongodb://mongodb-{{ENV}}.roboshop.internal:27017/catalogue"
 ExecStart=/bin/node /home/roboshop/catalogue/server.js
 
 [Install]
 Wantedby=multi-user.target
 
-#This is output of cat systemd.service
+#This is output of cat systemd.service in gitbash

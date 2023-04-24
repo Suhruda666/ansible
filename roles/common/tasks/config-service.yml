@@ -1,0 +1,11 @@
+- name: Copying Systemd service file
+  ansible.builtin.template:
+  src: systemd.service
+  dest: /etc/systemd/system/{{COMONENT}}.service
+  #remote source is not required here because systemd.service file is in the same directory
+
+- name: Restarting service
+  ansible.builtin.systemd
+  state: started
+  name: {{COMPONENT}}
+  daemon_reload: yes

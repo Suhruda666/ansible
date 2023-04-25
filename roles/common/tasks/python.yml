@@ -44,6 +44,5 @@ loop:
     name: common
     tasks_from: config-service
 
-- name: Set-hostname
-  ansible.builtin.shell: set-hostname {{COMPONENT}}
+
     

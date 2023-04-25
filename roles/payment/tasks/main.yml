@@ -12,6 +12,11 @@ loop:
     name: common
     tasks_from: create-user
 
+- name: Test Printout
+  ansible.builtin.debug
+    msg: "{{APPUSER_INFO}}"
+ 
+
 - name: Downloading and extracting the component
   include_role:
     name: common

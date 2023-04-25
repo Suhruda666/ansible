@@ -40,10 +40,10 @@
       src: /var/log/mysqld.log
     register: mysql_log
 
-    - name: Copy root password change change command
-      ansible.builtin.copy
-        src: root-pass.sql
-        dest: /tmp/root-pass.sql
+    #- name: Copy root password change change command
+      #ansible.builtin.copy
+        #src: root-pass.sql
+        #dest: /tmp/root-pass.sql
 
     - name: Declare facts
       ansible.builtin.set_fact:

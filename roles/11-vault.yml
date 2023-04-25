@@ -1,0 +1,8 @@
+- name: Demo on vault
+  hosts: localhost                           #means to execute the playbook tasks on the ansible node itself
+  vars:
+    PASS: abc123121 #can give encrypted PW also here which was generated in gitbash(check cmnd in session-34)
+  tasks:
+    - name: Printing
+      debug: 
+        msg: PASSWORD = abc123121

@@ -38,3 +38,12 @@ roles-examples/
 ##Limitation in this project:
 
 Fronted UI fails  intermittently(which ensure u see no items or display of catalogue)
+
+
+##Ansible-pull
+
+Whenever the infra is dynamic or not in a position to maintain the static inventory or whenever u want some config-management to happen as a part of boot-strapping, prefer using ansible-pull. Ansible-pull expects ansible to be installed on the machine when you're are running
+
+So, the easiest option is to install the ansible on the lab ami and keep it ready and prefer this AMI with ansible as a base image
+
+eg: ansible-pull -U git_repo_url -e COMPONENT=      -e ENV=     playbook-name.yml

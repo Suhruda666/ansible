@@ -15,7 +15,13 @@ loop:
 - name: Test Printout
   ansible.builtin.debug
     msg: "{{APPUSER_INFO}}"
- 
+
+
+- name: Downloading and extracting the component
+  include_role:
+    name: common
+    tasks_from: download
+
 - name: Updating the UID in the ini file
   ansible.builtin.lineinfile:
     path: /home/{{APPUSER}}/{{COMPONENT}}/{{COMPONENT}}.ini
@@ -26,16 +32,18 @@ loop:
   ansible.builtin.lineinfile:
     path: /home/{{APPUSER}}/{{COMPONENT}}/{{COMPONENT}}.ini
     regexp: '^gid'
-    line: uid = {{APPUSER_INFO.group}}
-
-
-- name: Downloading and extracting the component
-  include_role:
-    name: common
-    tasks_from: download
+    line: gid = {{APPUSER_INFO.group}}
 
 - name: Installing python dependencies
   ansible.builtin.pip
     requirements: /home/{{APPUSER}}/{{COMPONENT}}/requirements.txt
     executable: pip3.3
+
+- name: Configuring service
+  include_role:
+    name: common
+    tasks_from: config-service
+
+- name: Set-hostname
+  ansible.builtin.shell: set-hostname {{COMPONENT}}
     
